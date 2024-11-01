@@ -60,8 +60,14 @@
 2. branch별로 각각 생성한 파일 [Present.md](http://Present.md)와 [Other.md](http://Other.md)를 모두 갖고 있는 상태이다.
     
     ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/3b7f15ab-70ad-4846-9d78-be18878b5470/653d16d7-42d8-4948-bf44-9e77d6b1667b/image.png)
-    
+
+
+### Git Branch 전략
 
 # Summary
 
 이러한 특성을 가진 Git을 사용하여 하나의 프로젝트에 여러명의 개발자들이 개발 할 수 있다.
+
+# Git Branch 전략
+
+[Git : Branching Strategies](https://lhseunge.oopy.io/130f35ec-632d-8019-b1de-f5bdb61fa296)
