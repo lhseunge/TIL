@@ -15,7 +15,7 @@
 ![github-flow.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/3b7f15ab-70ad-4846-9d78-be18878b5470/c1eb5d27-4130-4248-aa04-487379b40248/github-flow.png)
 
 - feature : 개발이 진행되는 Branch.
-- master : 출시된 Branch
+- master : 출시된 Branch.
 
 ## Gitlab-Flow
 
