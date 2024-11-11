@@ -1,6 +1,6 @@
 # IoC (Inversion of Control : 제어의 역전)
 
-코드의 흐름이 제3자에게 위임되는 것
+코드의 흐름이 제3자에게 위임되는 것.
 
 ```java
 public class A {
