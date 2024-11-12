@@ -1,4 +1,5 @@
-# [DI (Dependency Injection : 의존성 주입)](https://lhseunge.notion.site/Spring-DI-IoC-138f35ec632d802497f4f32de226a256)
+# [DI (Dependency Injection : 의존성 주입)](https://lhseunge.oopy.io/13cf35ec-632d-8090-bc51-ee3791a34b02)
+
 
 IoC를 구현하기 위해 사용하는 디자인 패턴 중 하나.
 
