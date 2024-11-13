@@ -1,0 +1,17 @@
+- docker compose build <service>
+    - compose.yml에 필요한 모든 이미지를 찾아서 build한다.
+- docker compose up <service>
+    - compose.yml에 필요한 모든 컨테이너를 생성하고, 실행한다.
+- docker compose down <service>
+    - 해당 서비스의 컨테이너들을 중지하고, 제거한다.
+    - network, volume 설정도 제거된다.
+- docker compose stop <service>
+    - 해당 서비스의 컨테이너들을 중지한다.
+- docker compose start <service>
+    - 해당 서비스의 중지된 컨테이너들을 실행한다.
+- docker compose restart <service>
+    - stop + start
+- docker compose ps
+    - 컨테이너의 상태를 보여준다.
+- docker compose logs <service>
+    - 해당 서비스에서 발생한 로그를 출력한다.
