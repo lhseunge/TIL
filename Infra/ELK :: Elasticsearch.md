@@ -224,3 +224,23 @@ document에 해당 필드가 없으면 추가하고, 있으면 Update한다.
 ```bash
 curl -XDELETE 'localhost:9200/my_index/_doc/1?pretty' \
 ```
+
+# VI. inverted index (역색인)
+
+ES는 역색인을 사용하여, 빠른 검색이 가능하다. 
+
+| Index | inverted Index |
+| --- | --- |
+| 책의 목차 | 책 뒷장의 찾아보기 |
+
+ES는 텍스트를 파싱해서 검색어 사전을 만든 다음, inverted index 방식으로 저장한다.
+
+```bash
+"Lorem Ipsum is simply dummy text of the printing and typesetting industry"
+```
+
+예를 들어, 이 문장을 모두 파싱해서 각 단어들( Lorem, Ipsum, is, simply .... )을 저장하고,
+
+대문자는 소문자 처리하고, 유사어도 체크하고... 등의 작업을 통해 텍스트를 저장한다. 
+
+때문에 RDBMS보다 전문검색( Full Text Search )에 빠른 성능을 보인다.
