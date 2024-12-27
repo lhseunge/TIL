@@ -136,6 +136,56 @@ Elasticsearch CRUD작업은 특징에서 살펴본 바와 같이 API를 호출�
 
 curl로 데이터를 넘겨줄 수도 있지만, json 파일을 저장해서 데이터를 넘길 수도 있고, json 포맷으로 queryDSL을 작성해서 API를 호출할 수도 있다.
 
+## 0) 설치
+
+### MacOS
+
+```bash
+# 홈브루 엘라스틱 저장소 추가
+brew tab elastic/tap
+
+# Elasticsearch 설치 
+brew install elastic/tap/elasticsearch-full
+
+# Elasticsearch 데몬 서비스 실행
+brew services start elastic/tap/elasticsearch-full
+```
+
+Elasticsearch만 사용하고자 한다면 Elasticsearch의 xpack machine learning 설정을 꺼줘야한다. 
+
+```bash
+# Elasticsearch 설정 파일 열기
+vim /opt/homebrew/etc/elasticsearch/elasticsearch.yml
+
+# 아래 옵션 추가 후 저장
+xpack.ml.enabled: false
+```
+
+확인
+
+```bash
+curl 'localhost:9200'
+
+# response
+{
+  "name" : "testui-MacBookPro.local",
+  "cluster_name" : "elasticsearch_test",
+  "cluster_uuid" : "3_Jdvl9YROCnpNy91Q8tYw",
+  "version" : {
+    "number" : "7.17.4",
+    "build_flavor" : "default",
+    "build_type" : "tar",
+    "build_hash" : "79878662c54c886ae89206c685d9f1051a9d6411",
+    "build_date" : "2022-05-18T18:04:20.964345128Z",
+    "build_snapshot" : false,
+    "lucene_version" : "8.11.1",
+    "minimum_wire_compatibility_version" : "6.8.0",
+    "minimum_index_compatibility_version" : "6.0.0-beta1"
+  },
+  "tagline" : "You Know, for Search"
+}
+```
+
 ## 1) 생성
 
 ```bash
