@@ -140,52 +140,114 @@ curl로 데이터를 넘겨줄 수도 있지만, json 파일을 저장해서 데
 
 ## 0) 설치
 
-### MacOS
+- ~~7.17~~
+    
+    ### MacOS
+    
+    ```bash
+    # 홈브루 엘라스틱 저장소 추가
+    brew tab elastic/tap
+    
+    # Elasticsearch 설치 
+    brew install elastic/tap/elasticsearch-full
+    
+    # Elasticsearch 데몬 서비스 실행
+    brew services start elastic/tap/elasticsearch-full
+    ```
+    
+    Elasticsearch만 사용하고자 한다면 Elasticsearch의 xpack machine learning 설정을 꺼줘야한다. 
+    
+    ```bash
+    # Elasticsearch 설정 파일 열기
+    vim /opt/homebrew/etc/elasticsearch/elasticsearch.yml
+    
+    # 아래 옵션 추가 후 저장
+    xpack.ml.enabled: false
+    ```
+    
+    확인
+    
+    ```bash
+    curl 'localhost:9200'
+    
+    # response
+    {
+      "name" : "testui-MacBookPro.local",
+      "cluster_name" : "elasticsearch_test",
+      "cluster_uuid" : "3_Jdvl9YROCnpNy91Q8tYw",
+      "version" : {
+        "number" : "7.17.4",
+        "build_flavor" : "default",
+        "build_type" : "tar",
+        "build_hash" : "79878662c54c886ae89206c685d9f1051a9d6411",
+        "build_date" : "2022-05-18T18:04:20.964345128Z",
+        "build_snapshot" : false,
+        "lucene_version" : "8.11.1",
+        "minimum_wire_compatibility_version" : "6.8.0",
+        "minimum_index_compatibility_version" : "6.0.0-beta1"
+      },
+      "tagline" : "You Know, for Search"
+    }
+    ```
+    
+
+### 0_1) docker network 생성
 
 ```bash
-# 홈브루 엘라스틱 저장소 추가
-brew tab elastic/tap
-
-# Elasticsearch 설치 
-brew install elastic/tap/elasticsearch-full
-
-# Elasticsearch 데몬 서비스 실행
-brew services start elastic/tap/elasticsearch-full
+docker network create elastic
 ```
 
-Elasticsearch만 사용하고자 한다면 Elasticsearch의 xpack machine learning 설정을 꺼줘야한다. 
+### 0_2) docker Image Pull
 
 ```bash
-# Elasticsearch 설정 파일 열기
-vim /opt/homebrew/etc/elasticsearch/elasticsearch.yml
-
-# 아래 옵션 추가 후 저장
-xpack.ml.enabled: false
+docker pull docker.elastic.co/elasticsearch/elasticsearch:8.17.0
 ```
 
-확인
+- docker image 인증
+    
+    ```bash
+    wget https://artifacts.elastic.co/cosign.pub
+    cosign verify --key cosign.pub docker.elastic.co/elasticsearch/elasticsearch:8.17.0
+    ```
+    
+    ```bash
+    Verification for docker.elastic.co/elasticsearch/elasticsearch:8.17.0 --
+    The following checks were performed on each of these signatures:
+      - The cosign claims were validated
+      - Existence of the claims in the transparency log was verified offline
+      - The signatures were verified against the specified public key
+    ```
+    
+
+### 0_3) Start Container
 
 ```bash
-curl 'localhost:9200'
+docker run --name es01 --net elastic -p 9200:9200 -it -m 1GB docker.elastic.co/elasticsearch/elasticsearch:8.17.0
+```
 
-# response
-{
-  "name" : "testui-MacBookPro.local",
-  "cluster_name" : "elasticsearch_test",
-  "cluster_uuid" : "3_Jdvl9YROCnpNy91Q8tYw",
-  "version" : {
-    "number" : "7.17.4",
-    "build_flavor" : "default",
-    "build_type" : "tar",
-    "build_hash" : "79878662c54c886ae89206c685d9f1051a9d6411",
-    "build_date" : "2022-05-18T18:04:20.964345128Z",
-    "build_snapshot" : false,
-    "lucene_version" : "8.11.1",
-    "minimum_wire_compatibility_version" : "6.8.0",
-    "minimum_index_compatibility_version" : "6.0.0-beta1"
-  },
-  "tagline" : "You Know, for Search"
-}
+### 0_4) Create `elastic`  password & enrollment token
+
+```bash
+docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic
+docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana
+```
+
+```bash
+# 자기 환경변수로 등록
+# docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic 결과 
+export ELASTIC_PASSWORD="your_password"
+```
+
+### 0_5) Copy `http_ca.crt` SSL certificate
+
+```bash
+docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+```
+
+### 0_6) Make REST API Call
+
+```bash
+curl --cacert http_ca.crt -u elastic:$ELASTIC_PASSWORD https://localhost:9200
 ```
 
 ## 1) 생성
