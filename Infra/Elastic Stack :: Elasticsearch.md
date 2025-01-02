@@ -1,4 +1,4 @@
-# ELK :: Elasticsearch
+# Elastic Stack :: Elasticsearch
 
 # I. Elasticsearch란?
 
