@@ -57,6 +57,8 @@ input {
 }
 ```
 
+- [Jdbc Input Configuration Options](https://www.elastic.co/guide/en/logstash/8.17/plugins-inputs-jdbc.html#plugins-inputs-jdbc-options) 더보기
+
 ---
 
 [Creating a Logstash pipeline | Logstash Reference [8.17] | Elastic](https://www.elastic.co/guide/en/logstash/current/configuration.html)
