@@ -35,6 +35,14 @@ bin/logstash -f logstash-simple.conf
 
 [Logstash 설정 에제](https://www.elastic.co/guide/en/logstash/current/config-examples.html) 더보기
 
+# III. Plugin 적용
+
+## 1) Inputs
+
+### Jdbc input plugin
+
 ---
 
 [Creating a Logstash pipeline | Logstash Reference [8.17] | Elastic](https://www.elastic.co/guide/en/logstash/current/configuration.html)
+
+[Jdbc input plugin | Logstash Reference [8.17] | Elastic](https://www.elastic.co/guide/en/logstash/8.17/plugins-inputs-jdbc.html)
