@@ -91,3 +91,8 @@ Grok은 현재 Logstash에서 구조화되지 않은 로그 데이터를 구조�
 | **multiline** | Java 예외 및 스택 추적 메시지와 같은 여러 줄의 텍스트 이벤트를 단일 이벤트로 병합한다. |
 - [Codec Plugins](https://www.elastic.co/guide/en/logstash/8.17/codec-plugins.html) 더보기
 
+---
+
+[[ELK] LogStash(로그스태시)란?](https://idkim97.github.io/2024-04-17-LogStash(%EB%A1%9C%EA%B7%B8%EC%8A%A4%ED%83%9C%EC%8B%9C)%EB%9E%80/)
+
+[How Logstash Works | Logstash Reference [8.17] | Elastic](https://www.elastic.co/guide/en/logstash/current/pipeline.html)
