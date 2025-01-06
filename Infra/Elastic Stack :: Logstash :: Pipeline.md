@@ -41,6 +41,22 @@ bin/logstash -f logstash-simple.conf
 
 ### Jdbc input plugin
 
+- 사용법
+
+```bash
+input {
+  jdbc {
+    jdbc_driver_library => "mysql-connector-java-5.1.36-bin.jar"
+    jdbc_driver_class => "com.mysql.jdbc.Driver"
+    jdbc_connection_string => "jdbc:mysql://localhost:3306/mydb"
+    jdbc_user => "mysql"
+    parameters => { "favorite_artist" => "Beethoven" }
+    schedule => "* * * * *"
+    statement => "SELECT * from songs where artist = :favorite_artist"
+  }
+}
+```
+
 ---
 
 [Creating a Logstash pipeline | Logstash Reference [8.17] | Elastic](https://www.elastic.co/guide/en/logstash/current/configuration.html)
