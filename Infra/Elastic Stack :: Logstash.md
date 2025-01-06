@@ -76,3 +76,18 @@ Grok은 현재 Logstash에서 구조화되지 않은 로그 데이터를 구조�
 | **statsd** | `statsd`에 데이터를 전송한다. 
 이는 카운터와 타이머같은 통계를 수신하고 UDP를 통해 전송하고 집계를 하나 이상의 플러그인 백엔드로 전송하는 서비스  |
 - [Output Plugins](https://www.elastic.co/guide/en/logstash/8.17/output-plugins.html) 더보기
+
+## 4) Codecs (코덱)
+
+`Codecs` 는 입력과 출력의 일부로 작동할 수 있는 스트림 필터이다. 
+
+코덱을 사용하면 메세지 전송을 직렬화 프로세스에서 쉽게 분리할 수 있다.
+
+- Codec Plugins
+
+| Codec Plugins | Description |
+| --- | --- |
+| **json** | JSON 형식으로 데이터를 인코딩 / 디코딩한다. |
+| **multiline** | Java 예외 및 스택 추적 메시지와 같은 여러 줄의 텍스트 이벤트를 단일 이벤트로 병합한다. |
+- [Codec Plugins](https://www.elastic.co/guide/en/logstash/8.17/codec-plugins.html) 더보기
+
