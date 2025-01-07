@@ -46,18 +46,50 @@ bin/logstash -f logstash-simple.conf
 ```bash
 input {
   jdbc {
-    jdbc_driver_library => "mysql-connector-java-5.1.36-bin.jar"
-    jdbc_driver_class => "com.mysql.jdbc.Driver"
-    jdbc_connection_string => "jdbc:mysql://localhost:3306/mydb"
-    jdbc_user => "mysql"
-    parameters => { "favorite_artist" => "Beethoven" }
+    jdbc_driver_library => "/Users/test/logstash/logstash-8.17.0/postgresql-42.7.3.jar"
+    jdbc_driver_class => "org.postgresql.Driver"
+    jdbc_connection_string => "jdbc:postgresql://localhost:5432/lunch"
+    jdbc_user => "seungpro"
+    jdbc_password => "seungpro"
+    parameters => { "key" => "k2systems" }
     schedule => "* * * * *"
-    statement => "SELECT * from songs where artist = :favorite_artist"
+    statement => "SELECT * from store.store where personal_key = :key"
   }
 }
 ```
 
 - [Jdbc Input Configuration Options](https://www.elastic.co/guide/en/logstash/8.17/plugins-inputs-jdbc.html#plugins-inputs-jdbc-options) 더보기
+
+## 2) Filters
+
+## 3) Outputs
+
+### Elasticsearch
+
+```bash
+
+output {
+  elasticsearch {
+
+    hosts => ["localhost:9200"]
+
+    ssl => true
+    ssl_certificate_authorities => "/Users/test/http_ca.crt"
+    user => "elastic"
+    password => "wy7fhxK1-QiNZvnfVHr1"
+
+    index => "my_index"
+    document_type => "review"
+
+  }
+
+  stdout {
+    codec => rubydebug
+  }
+}
+```
+
+- [Elasticsearch Output Configuration Options](https://www.elastic.co/guide/en/logstash/8.17/plugins-outputs-elasticsearch.html#plugins-outputs-elasticsearch-options) 더보기
 
 ---
 
