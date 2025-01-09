@@ -90,3 +90,5 @@
 ---
 
 [[알고리즘 + 자료구조 = 프로그램] 자료구조의 개념과 종류](https://www.hanbit.co.kr/channel/category/category_view.html?cms_code=CMS2832062046)
+
+[자료 구조(Data Structure) 개념 및 종류 정리](https://bnzn2426.tistory.com/115)
