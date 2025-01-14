@@ -23,7 +23,7 @@
 - 스택 (Stack)
 - 큐 (Queue)
 
-**비선형 자료구조(Nonlinear Data Structure) : 데이터를 순서와 상관 없이 계층 구조나 그래프 구조로 연결하는 자료 구조다.**
+**비선형 자료구조(Nonlinear Data Structure) : 데이터를 순서와 상관 없이 계층 구조나 그래프 구조로 연결하는 자료 구조이다.**
 
 - 트리 (Tree)
 - 그래프 (Graph)
