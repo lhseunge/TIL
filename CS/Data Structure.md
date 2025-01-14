@@ -16,9 +16,17 @@
 
 자료구조는 선형과 비선형 등의 여러 속성을 기반으로 분류할 수 있다.
 
-**선형 자료구조(Linear Data Structure)는 데이터 요소를 순서대로 정렬한다.**
+**선형 자료구조(Linear Data Structure) : 데이터를 일렬로 나열한 자료 구조이다.** 
 
-**비선형 자료구조(Nonlinear Data Structure)는 데이터를 비연속적으로 연결한다.**
+- 배열 (Array)
+- 연결 리스트 (Linked List)
+- 스택 (Stack)
+- 큐 (Queue)
+
+**비선형 자료구조(Nonlinear Data Structure) : 데이터를 순서와 상관 없이 계층 구조나 그래프 구조로 연결하는 자료 구조다.**
+
+- 트리 (Tree)
+- 그래프 (Graph)
 
 # III. 필수 자료구조 8개
 
