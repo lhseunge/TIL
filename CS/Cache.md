@@ -5,12 +5,12 @@
 
 ## 정리
 
-### 캐싱 X
+### 캐싱을 하지 않는 Case
 
 - Client ↔ Controller ↔ Service ↔ Repository
 - 캐싱되어있지 않은 데이터는 저장소까지 조회하는 로직을 수행한다.
 
-### 캐싱 O
+### 캐싱을 하는 Case
 
 - Client ↔ Controller ↔ Service / Repository
 - 캐싱된 데이터는 저장소를 조회하는 로직을 수행하지 않고, 저장된 데이터를 반환한다.
