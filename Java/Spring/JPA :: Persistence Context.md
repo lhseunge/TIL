@@ -43,7 +43,7 @@ Entity Manager를 통해 영속성 컨텍스트에 접근하고 관리.
 
 ## Entity Manager 생성
 
-- `EntityManagerFactiry`
+- `EntityManagerFactory`
     - 설정 파일(ex. Persistence.xml)에서 작성한 persistence-unit(DB 설정 정보)로 생성.
 - `Entity Manager`
     - 위에서 생성한 `EntityManagerFactory` 에서 생성 가능
