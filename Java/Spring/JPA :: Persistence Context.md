@@ -11,7 +11,7 @@
 - Application과 DB 사이 객체를 보관하는 가상의 저장소
 - EntityManager를 통해 Entity를 영속성 컨텍스트에 보관, 관리
 
-## Entity Manager
+# Entity Manager
 
 Entity Manager를 통해 영속성 컨텍스트에 접근하고 관리.
 
@@ -35,6 +35,21 @@ Entity Manager를 통해 영속성 컨텍스트에 접근하고 관리.
         
         ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/3b7f15ab-70ad-4846-9d78-be18878b5470/6cf9ff6d-8c98-4f44-aed9-60d71fe64660/image.png)
         
+
+# Entity Manager Factory
+
+- DB를 하나만 사용하는 APP은 일반적으로 하나의 Entity Manager Factory만 사용한다.
+- Entity Manager가 필요할 때 마다 Factory에서 Entity Manager를 생성하여 사용한다.
+- Entity Manager Factory를 생성하는 비용은 상당히 크다.
+- App 전체에 한 개의 Entity Manager Factory를 만들어서 사용하도록 설계되어 있다.
+- 하지만 Entity Manager를 생성하는 비용은 거의 들지 않기 때문에 필요 시 Entity Manager만 생성하고, 사용하면 된다.
+
+### Multi Thread 이슈
+
+- Entity Manager Factory는 여러 Thread가 동시에 접근해도 안전햐다.
+- Entity Manager는 여러 Thread가 접근 시 동시성 문재가 발생한다.
+- Entity Manager는 절대 Thread간 공유를 해선 안된다.
+    - @PersistantContext Annotation을 사용하여 Thread간 공유를 막을 수 있다.
 
 # Entity의 생명주기
 
@@ -109,3 +124,29 @@ em.remove(member);
 - 영속성 컨텍스트에 있는 Entity를 삭제
 - 이 때 DB에서도 삭제
     - Transaction이 끝나거나, EntityManager가 Flush되면 삭제된다.
+
+## 영속성 컨텍스트의 장점
+
+- 1차 캐시 사용 가능
+- 동일성 보장
+- Transaction을 지원하는 쓰기 지연
+- 변경 감지
+- 지연 로딩
+
+## CRUD - Work flow
+
+### 조회
+
+- 영속성 컨텍스트는 내부에 1차 캐시를 갖고있다.
+- 영속상태의 Entity는 모두 1차 캐시에 저장된다.
+
+| 1차 캐시  | Map |
+| --- | --- |
+| @Id | Key |
+| Entity Instant | Value |
+- EntityManager.persist(Entity)는 1차 캐시에 데이터를 저장하고, 아직 DB에는 반영되지 않는다.
+- 1차 캐시의 Key는 DB의 PK와 매핑된다.
+
+EntityManager.find(Member.class, “memberId”);
+
+---
