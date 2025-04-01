@@ -58,6 +58,103 @@ JPA를 사용함에 있어 매핑 어노테이션의 숙지는 필수적이다.
 @Entity
 @Table(name="MEMBER")
 public class Member {
-		... 작성중 ... 
+
+		@Id
+		@Column(name = "ID")
+		private String id;
+		
+		@Column(name = "NAME")
+		private String username;
+		
+		private Integer age;
+		
+		
+		// 추가 
+		@Enumerated(EnumType.STRING)
+		private RoleType roleType;
+		
+		@Temporal(TemporalType.TIMESTAMP)
+		private Date createdDate;
+		
+		@Temporal(TemporalType.TIMESTAMP)
+		private Date lastModifiedDate;
+		
+		@Lob
+		private String description;
+		
+}
+
+public enum RoleType {
+		ADMIN, USER
 }
 ```
+
+### 위의 코드 분석
+
+1. roleType : 
+    - Java의 enum을 사용해서 회원의 타입을 구분했다.
+    - 일반 회원은 USER, 관리자는 ADMIN이다.
+    - 위 처럼 Java의 enum을 사용하려면 @Enumerated 어노테이션을 사용해야 한다.
+2. createdDate, lastModifiedDate : 
+    - Java의 날짜 타입은 @Temporal을 사용해서 매핑한다.
+3. description : 
+    - 회원을 설명하는 필드는 길이 제한이 없다.
+    - 따라서, 데이터의 VARCHAR 타입 대신에 CLOB 타입으로 지정해야 한다.
+    - @Lob을 사용하면 CLOB, BLOB 타입을 매핑할 수 있다.
+    
+    > MariaDB에선 LONGTEXT 혹은 LONGBLOB으로 반영된다.
+    > 
+
+## Database 스키마 자동 생성
+
+- JPA는 DB 스키마를 자동으로 생성하는 기능을 지원한다.
+- 클래스의 매핑 정보를 보면 어떤 테이블의 어떤 컬럼을 사용하는지 알 수 있다.
+- JPA는 이 매핑정보와 DB 방언을 사용해서 스키마를 생성한다.
+
+- persistence.xml 혹은 application.properties에서 hibernate.hbm2ddl.auto 라는 설정을 추가하면 동작한다.
+- **이 속성을 추가하면 애플리케이션 실행 시점에 DB 테이블을 자동으로 생성한다.**
+- hibernate.show_sql 옵션으로 테이블 생성 DDL을 출력할 수 있다.
+- 자동으로 생성하는 DDL은 DB 방언에 따라 달라지기 때문에 어느 DB를 선택하는지에 따라 타입이 바뀐다.
+
+- 스키마 자동 생성은 테이블을 직접 생성하는 수고를 덜 수 있지만, 운영 환경에서 사용할 만큼 완벽하지 않다.
+    - 개발 환경에서 사용하거나, 매핑을 어떻게 하는지 참고하는 등 개발 단계에서만 사용하는 것이 좋다.
+
+- hbm2ddl.auto 속성
+
+| 옵션 | 설명 |
+| --- | --- |
+| create | 기존 테이블을 삭제하고 새로 생성한다. DROP + CREATE |
+| create-drop | create 속성에 추가로 애플리케이션을 종료할 때 생성한 DDL을 제거한다. 
+DROP + CREATE + DROP |
+| update | DB 테이블과 Entity 매핑정보를 비교해서 변경 사항만 수정한다.  |
+| validate | DB 테이블과 Entity 매핑정보를 비교해서 차이가 있으면 경고를 남기고 애플리케이션을 실행하지 않는다. 
+이 설정은 DDL을 수정하지 않는다.  |
+| none | 자동 생성 기능을 사용하지 않으려면 해당 속성 자체를 삭제하거나, 유효하지 않은 옵션 값을 주면 된다.
+(none은 유효하지 않은 옵션 값)  |
+
+> **HBM2DDL 주의사항**
+운영 서버에서 create, create-drop, update처럼 DDL을 수정하는 옵션은 절대로 사용해선 안된다.
+오직 개발서버나, 개발 단계에서만 사용해야한다. 
+이 옵션들은 운영 중인 DB의 테이블이나 컬럼을 삭제할 수 있다.
+> 
+
+개발 환경에 따른 추천 전략
+
+| 개발 환경 | 추천 전략 |
+| --- | --- |
+| 개발 초기 단계 | create / update |
+| 자동화 테스트 단계 혹은 CI 서버 | create / create-drop  |
+| 테스트 서버 | update / validate |
+| 스테이징 및 운영 서버 | validate / none |
+
+> 이름 매핑 전략 변경 
+Java는 카멜 표기법을 주로 사용하여 네이밍하고
+DB는 언더 스코어를 주로 사용한다. 
+
+회원 Entity를 매핑하려면 @Column.name 속성을 명시적으로 사용해서 이름을 지어주어야 한다. 
+@Column(name = “role_type”)
+String roleType;
+
+hibernate.ejb.naming_strategy 속성을 사용하면 이름 매핑 전략을 변경할 수 있다.
+… 작성중 …
+>
