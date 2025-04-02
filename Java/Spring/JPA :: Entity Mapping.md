@@ -156,5 +156,62 @@ DB는 언더 스코어를 주로 사용한다.
 String roleType;
 
 hibernate.ejb.naming_strategy 속성을 사용하면 이름 매핑 전략을 변경할 수 있다.
+hibernate는 ImprovedNamingStrategy 클래스를 제공하는데, 테이블 명이나 컬럼명이 생략되면 Java의 카멜 표기법을 테이블의 언더스코어 표기법으로 매핑한다. 
+
+Java Entity ↔ DB Column
+ex) roleType ↔ role_type
+> 
+
+## DDL 생성 기능
+
+- 회원 이름을 필수로 입력해야하고, 10자를 초과하면 안 된다는 제약 조건이 추가되면
+- 스키마 자동 생성을 통해 DDL에 제약 조건을 추가할 수 있다.
+
+```java
+@Entity
+@Table(name="MEMBER")
+public class Member {
+
+		@Id
+		@Column(name = "ID")
+		private String id;
+		
+		@Column(name = "NAME"**, nullable = false, length = 10**) // nullable, length 추가
+		private String username;
+		
+		...
+}
+```
+
+- @Column 어노테이션의 속성을 변경하면 DDL에 제약조건을 추가할 수 있다.
+    - nullable 속성 값을 false로 지정하면 자동 생성 DDL에 not null 제약조건을 추가할 수 있다.
+    - length 속성 값을 사용하면 자동 생성 DDL에 문자 크기를 지정할 수 있다.
+
+```java
+@Entity
+@Table(name="MEMBER", uniqueConstraints = {@UniqueConstraint
+		name = "NAME_AGE_UNIQUE",
+		columnName = {"NAME", "AGE"}
+})
+public class Member {
+
+		...
+		
+}
+```
+
+```sql
+ALTER TABLE MEMBER
+		ADD CONSTRAINT NAME_AGE_UNIQUE UNIQUE (NAME, AGE)
+```
+
+- @Table의 uniqueConstraints 속성은 유니크 제약조건을 만들 수 있다.
+    
+    
+- DDL 제약 조건을 생성하는 옵션들은 **DDL을 자동 생성할 때만 사용되고, JPA의 실행 로직에는 영향을 주지 않는다.**
+- 이 기능을 사용하지 않고 직접 DDL을 만든다면 사용할 이유가 없다.
+- 이 기능을 사용하면 개발자가 Entity만 보고도 다양한 제약조건을 파악할 수 있다는 장점이 있다.
+
+## 기본 키 매핑
+
 … 작성중 …
->
