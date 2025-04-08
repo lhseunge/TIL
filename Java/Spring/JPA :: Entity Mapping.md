@@ -212,9 +212,24 @@ ALTER TABLE MEMBER
 - 이 기능을 사용하지 않고 직접 DDL을 만든다면 사용할 이유가 없다.
 - 이 기능을 사용하면 개발자가 Entity만 보고도 다양한 제약조건을 파악할 수 있다는 장점이 있다.
 
-## 기본 키 매핑
+## DB 기본 키 자동 생성 전략
 
-… 작성중 …
+- 기본 식별자를 직접 할당하는 방법 외에 자동 생성 값을 사용하는 방법도 있다.
+    - ex) mysql(mariadb) - Auto Increment
 
+### IDENTITY
 
+- 기본 키 생성을 DB에 위임한다.
 
+### SEQUENCE
+
+- DB의 sequence를 이용하는 방법
+
+### TABLE
+
+- 키 생성 테이블을 사용하는 방법
+
+- 자동 생성 전략이 다양한 이유
+    - DB 밴더마다 지원 방식이 달라서
+        - Oracle은 sequence를 사용.
+        - Mysql은 Auto Increment 제공
