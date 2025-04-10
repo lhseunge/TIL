@@ -219,11 +219,96 @@ ALTER TABLE MEMBER
 
 ### IDENTITY
 
-- 기본 키 생성을 DB에 위임한다.
+<aside>
+
+기본 키 생성을 DB에 위임하는 전략
+
+</aside>
+
+> IDENTITY 전략은 DB Insert 후 기본 키 값을 조회할 수 있다. 
+→ Entity에 식별자 값을 할당하려면 JPA는 추가로 DB를 조회 해야 한다. 
+
+JDBC의 Statement.getGeneratedKeys()를 사용하면 데이터 저장과 동시에 생성된 키 값을 얻어올 수 있다.
+hibernate는 이 메소드를 이용해 DB와 한번만 통신한다. 
+
+IDENTITY 전략은 Entity를 DB에 저장해야 식별자를 구할 수 있다.
+→ persist() 호출 즉시 Insert SQL이 나간다. 
+**→ 쓰기 지연이 동작하지 않는다.**
+> 
+
+**주 사용 DB**
+
+- Mysql (Mariadb)
+- PostgreSQL
+- SQL Server
+- DB 2
 
 ### SEQUENCE
 
-- DB의 sequence를 이용하는 방법
+<aside>
+
+DB의 sequence를 이용하는 방법
+
+</aside>
+
+> SEQUENCE 전략은 DB의 시퀀스를 통해 기본 키를 생성한다.
+DB sequence는 유일한 값을 순서대로 생성하는 특별한 DB Object이다. 
+
+sequence 전략 최적화
+sequence 전략은 DB 시퀀스를 통해 식별자를 조회하는 추가 작업이 필요하다.  (DB와 2번 통신한다.)
+
+1. 식별자를 구하려고 DB 시퀀스를 조회한다. 
+→ select board_seq.NEXTVAL from dual 
+2. 조회할 시퀀스를 키 값으로 DB에 저장한다.
+→ insert Into BOARD … 
+
+JPA는 시퀀스 접근 횟수를 줄이기 위해 @SequenceGenerator.allocationSize를 사용한다. 
+→ allocationSize 값 만큼 한 번에 시퀀스 값을 증가시키고 그만큼 메모리에 시퀀스 값을 할당.
+→ allocationSize = 50 : 시퀀스를 한 번에 50 증가시킨 다음 1 ~ 50은 메모리에서 할당한다. 
+51이 되면 시퀀스를 100으로 증가시키고, 51 ~ 100 사이의 값을 메모리에서 식별자로 할당한다.
+
+위 방법은 시퀀스 값을 선점해여 여러 JVM이 동시에 접근해도 키 값이 충돌하지 않는 장점이 있다.
+→ 시퀀스가 증가할 때 값이 한번에 많이 증가한다.
+→ 이 점이 부담스럽거나 Insert 성능이 크게 중요하지 않다면, allocationSize를 1로 설정하면 된다. 
+
+hibernate.id.new_generator_mapping 속성을 True로 설정해야 위의 최적화 방법이 적용된다.
+해당 설정이 아닐경우 hibernate는 과거에 사용하던 방법으로 키를 생성하는데, 
+
+시퀀스 값을 애플리케이션에서 할당한다. ****
+> 
+
+@SequenceGenerator (시퀀스 생성 어노테이션)
+
+| 속성 | 설명 | 필수값 |
+| --- | --- | --- |
+| name | 식별자 생성기 이름
+GeneratorValue의 generator 속성의 값으로 매핑 |  |
+| sequenceName | DB에 등록되어있는 시퀀스 이름  | “hibernate_sequence” |
+| initialValue | 시퀀스의 시작 Index
+ddl 생성시에만 사용됨 | 1 |
+| allocationSize | 시퀀스 1회 호출당 증가하는 수 | 50 |
+
+매핑할 DDL
+
+```sql
+create sequence <sequenceName> 
+		start with <initialValue> increment by <allocationSize>
+```
+
+> @SequenceGenerator는 @GeneratedValue 옆에 사용해도 된다.
+> 
+
+```sql
+@Entity
+public Class Board {
+
+		@Id
+		@GeneratedValue(...)
+		@SequenceGenerator(...)
+		private Long id;
+		
+}
+```
 
 ### TABLE
 
