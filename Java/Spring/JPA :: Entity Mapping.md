@@ -4,7 +4,7 @@ JPA를 사용함에 있어 매핑 어노테이션의 숙지는 필수적이다.
 
 </aside>
 
-# JPA의 대표 매핑 어노테이션 4가지
+# JPA의 대표 매핑 어노테이션 4종류
 
 - 객체와 테이블 매핑 : @Entity, @Table
 - 기본키 매핑 : @Id
@@ -14,8 +14,6 @@ JPA를 사용함에 있어 매핑 어노테이션의 숙지는 필수적이다.
 ## @Entity
 
 - JPA를 사용하여 DB Table과 Entity를 매핑하기 위해선 @Entity를 필수로 붙여야 한다.
-
-### 속성
 
 | 이름 | 설명 | 기본값 |
 | --- | --- | --- |
@@ -89,8 +87,7 @@ public enum RoleType {
 }
 ```
 
-### 위의 코드 분석
-
+- **위의 코드 분석**
 1. roleType : 
     - Java의 enum을 사용해서 회원의 타입을 구분했다.
     - 일반 회원은 USER, 관리자는 ADMIN이다.
@@ -312,7 +309,108 @@ public Class Board {
 
 ### TABLE
 
-- 키 생성 테이블을 사용하는 방법
+<aside>
+
+키 생성 테이블을 사용하는 방법
+
+</aside>
+
+- Table 전략은 키 생성 테이블을 만들어 DB sequence를 흉내내는 전략이다.
+- DB의 Table을 사용하기 때문에 모든 종류의 DB에 적용할 수 있다.
+
+```sql
+create table MY_SEQUENCES (
+		sequence_name varchar(255) not null,
+		next_val bigint,
+		primary key (sequence_name)
+)
+```
+
+- sequence_name 컬럼을 시퀀스 이름으로,
+- next_val 컬럼을 시퀀스 값으로 사용한다.
+- 컬럼의 이름은 변경할 수 있지만 여기선 기본 값이다.
+
+```java
+@Entity
+@TableGenerator(
+		name = "BOARD_SEQ_GENERATOR",
+		table = "MY_SEQUENCES".
+		pkColumnValue = "BOARD_SEQ", allocationSize = 1)
+public class Board {
+
+		@Id
+		@GeneratedValue(strategy = GenerationType.TABLE,
+				generator = "BOARD_SEQ_GENERATOR")
+		private Long id;
+
+		...
+}
+```
+
+- @TableGenerator로 테이블 키 생성기 등록 (BOARD_SEQ_GENERATOR)
+- 위에서 생성한 MY_SEQUENCES 테이블을 키 생성 테이블로 매핑.
+- TABLE 전략을 사용하기 위해 @GeneratedValue.strategy를 GenerationType.TABLE 로 설정.
+- @GeneratedValue.generator에 키 생성기를 지정 (BOARD_SEQ_GENERATOR)
+    - 앞으로 할당될 Id의 식별자 값은 BOARD_SEQ_GENERATOR 가 할당한다.
+
+- **TABLE 전략은 테이블을 사용한다는 점을 제외하면 SEQUENCE 전략과 내부 동작 방식이 같다.**
+
+| sequence_name | next_val |
+| --- | --- |
+| BOARD_SEQ | 2 |
+| MEMBER_SEQ | 10 |
+| PRODUCT_SEQ | 50 |
+| … | … |
+- @TableGenerator.pkColumnName에서 지정한 “BOARD_SEQ”가 컬럼으로 추가된다.
+- 키 생성기를 사용할 때마다 next_val의 값이 증가한다.
+
+- MY_SEQUENCES에 해당하는 시퀀스가 없으면 JPA가 자동으로 값을 생성한다.
+    - 값을 미리 넣어둘 필요가 없다.
+
+@TableGenerator 속성 정리 
+
+| 속성 | 기능 | 기본값 |
+| --- | --- | --- |
+| name | 식별자 생성기 이름 | 필수 |
+| table | 키 생성 테이블 명 | hibernate_sequence |
+| pkColumnName | 시퀀스 컬럼 명 | sequence_name |
+| valueColumnName | 시퀀스 값 컬럼 명 | next_val |
+| pkColumnValue | 키로 사용할 값 이름 | 엔티티 이름 |
+| initialValue | 초기 값, 마지막으로 생성된 값이 기준이다. | 0 |
+| allocationSize | 시퀀스 한 번 호출에 증가하는 수
+(성능 최적화에 사용됨) | 50 |
+| catalog, schema | DB catalog, schema 이름 |  |
+| uniqueConstraints(DDL) | 유니크 제약 조건을 지정할 수 있다.  |  |
+- 매핑할 DDL
+
+| {pkColumnName} | {valueColumnName} |
+| --- | --- |
+| {pkColumnValue} | {initialValue} |
+
+> TABLE 전략은 값을 조회하면서 select 쿼리 후 update 쿼리를 사용. 
+→ sequence 전략과 비교했을 때 DB와 한번 더 통신하는 단점을 갖음.
+
+최적화를 하려면 @TableGenerator.allocationSize를 사용하면 됨. (SEQUENCE 전략처럼 사용하면 됨)
+> 
+
+### AUTO 전략
+
+<aside>
+
+AUTO 전략은 DB 방언에 따라 IDENTITY, SEQUENCE, TABLE 전략 중 한가지를 자동으로 선택한다.
+
+</aside>
+
+- Oracle → SEQUENCE 전략
+- Mysql → IDENTITY 전략
+
+- **AUTO 전략은 @GeneratedValue.strategy의 기본값이다.**
+
+- AUTO 전략은 DB를 변경해도 코드를 수정할 필요가 없다는 장점을 갖는다.
+    - 개발 초기 혹은 프로토 타입 개발 시 유용하다.
+
+- AUTO 전략 사용 시 SEQUENCE, TABLE 전략이 선택되면 시퀀스나 키 생성 테이블을 만들어 두어야 한다.
+    - 스키마 자동 생성 기능을 사용한다면, 하이버네이트가 기본값을 사용해서 적절한 시퀀스나 키 생성 테이블을 자동으로 만들어 준다.
 
 - 자동 생성 전략이 다양한 이유
     - DB 밴더마다 지원 방식이 달라서
