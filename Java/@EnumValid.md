@@ -53,3 +53,4 @@ public enum AuthTypeEnum {
     email
 }
 ```
+
