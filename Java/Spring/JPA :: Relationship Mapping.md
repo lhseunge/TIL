@@ -49,4 +49,87 @@
         - 이렇게 서로 참조하는 것을 양방향 참조라 한다.
         - **정확히 말하자면 양방향이 아니라 서로 다른 단방향 연관관계 2개 이다.**
 
-![image.png](attachment:810979e4-c822-4a41-8284-2cf7c987b060:image.png)
+### 객체 관계 매핑
+
+<aside>
+
+JPA를 사용해서 연관관계를 매핑하는 방법
+
+</aside>
+
+![그림 5.4 다대일 연관관계1 | 다대일(N:1), 단방향](attachment:810979e4-c822-4a41-8284-2cf7c987b060:image.png)
+
+그림 5.4 다대일 연관관계1 | 다대일(N:1), 단방향
+
+```java
+@Entity
+public class Member {
+
+		@Id
+		@Column(name = "MEMBER_ID")
+		private String id;
+		
+		private String username;
+		
+		// 연관관계 매핑
+		@ManyToOne
+		@JoinColumn(name = "TEAM_ID")
+		private Team team;
+		
+		...
+		
+}
+
+@Entity
+public class Team {
+
+		@Id
+		@Column(name = "TEAM_ID")
+		private String id;
+		
+		private String name;
+		
+		...
+		
+}
+```
+
+- 예제 5.4에서 회원 Entity를 매핑하고, 예제 5.5에서 팀 Entity를 매핑했다.
+    - **객체 연관관계** : 회원 객체의 Member.team 필드 사용
+    - **테이블 연관관계** : 회원 테이블의 MEMBER.TEAM_ID 외래 키 컬럼을 사용
+- **Member.team과 MEMBER.TEAM_ID를 매핑하는 것이 연관관계 매핑이다.**
+- 연관관계 매핑 코드
+    
+    ```java
+    @ManyToOne
+    @JoinColumn(name = "TEAM_ID")
+    private Team team;
+    ```
+    
+- 연관관계를 매핑하기 위한 어노테이션
+    - @ManyToOne :
+        - 다대일 관계 매핑을 나타낸다.
+        - 연관관계 매핑 시 이렇게 다중성을 나타내는 어노테이션을 **필수로** 사용해야 한다.
+    - @JoinColumn :
+        - 외래 키를 매핑할 때 사용한다.
+        - name 속성에는 매핑할 외래 키 이름을 지정한다.
+        - 회원과 팀 테이블은 TEAM_ID 외래 키로 연관관계를 맺으므로 이 값을 지정하면 된다.
+        - 이 어노테이션은 생략할 수 있다.
+
+### @JoinColumn 속성
+
+| 속성 | 가능 | 기본값 |
+| --- | --- | --- |
+| name | 매핑할 외래 키 이름 | 필드명_참조 테이블의 기본 키 컬럼명 |
+| referenceColumnName | 외래 키가 참조하는 대상 테이블의 컬럼명 | 참조하는 테이블의 기본 키 컬럼명 |
+| foreignKey(DDL) | 외래 키 제약조건을 직접 지정할 수 있다.
+이 속성은 테이블을 생성할 때만 사용한다. |  |
+| unique
+nullable
+insertable
+updatable
+columnDefinition
+table | @Column의 속성과 같다.  |  |
+
+> @JoinColumn을 생략하면 외래키를 찾을 때 기본 전략을 사용한다.
+>
