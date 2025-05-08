@@ -311,3 +311,4 @@ public class Team {
     - mappedBy 속성은 양방향 매핑일 때 사용한다.
         - 반대쪽 매핑의 필드 이름을 값으로 주면 된다.
         - 반대쪽 매핑이 Member.team 이므로 “team”을 값으로 주었다.
+
