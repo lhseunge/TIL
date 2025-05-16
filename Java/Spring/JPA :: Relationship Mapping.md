@@ -407,4 +407,48 @@ summary)
 > DB 테이블 다대일, 일대다 관계에선 항사 ‘다’ 쪽이 외래 키를 가진다.
 → @ManyToOne은 항상 연관관계의 주인이 되므로 mappedBy를 설정할 수 없다. 
 → @ManyToOne에는 mappedBy가 없다.
->
+> 
+
+## 양방향 연관관계 저장
+
+```java
+public void testSave() {
+		
+		// 팀1 저장
+		Team team1 = new Team("team1", "팀");
+		em.persist(team1);
+
+		// 회원1 저장
+		Member member1 = new Member("member1", "회원1");
+		member1.setTeam(team1); // 연관관계 설정 member1 -> team1
+		em.persist(member1);
+
+		// 회원2 저장
+		Member member2 = new Member("member2", "회원2");
+		member2.setTeam(team1); // 연관관계 설정 member2 -> team1
+		em.persist(member2);
+
+}
+```
+
+위 코드는 예제 5.6 단방향 연관관계의 회원, 팀 저장 코드와 같다. 
+
+DB에서 회원 테이블을 조회하면 TEAM_ID 외래 키에 팀에 기본 키 값이 저장되어 있다. 
+
+```java
+team1.getMembers().add(member1); // 무시
+```
+
+(그래프 탐색을 위해?) 위와 같은 코드가 필요할 것 같지만 Team.members 는 연관관계의 주인이 아니다. 
+
+→ 주인이 아닌 곳에 입력된 값은 외래 키에 영향을 주지 않는다. DB에 저장되지 않고 무시된다. 
+
+```java
+member1.setTeam(team1); // 연관관계 설정
+```
+
+Member.team은 연관관계의 주인이다. 
+
+em은 이곳에 입력된 값을 사용해 외래 키를 관리한다.
+
+## 양방향 연관관계의 주의점
